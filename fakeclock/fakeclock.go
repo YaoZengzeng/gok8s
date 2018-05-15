@@ -23,11 +23,11 @@ type FakeClock struct {
 }
 
 type fakeClockWaiter struct {
-	targetTime 		time.Time
-	stepInterval	time.Duration
-	skipIfBlocked	bool
-	destChan		chan time.Time
-	fired			bool
+	targetTime    time.Time
+	stepInterval  time.Duration
+	skipIfBlocked bool
+	destChan      chan time.Time
+	fired         bool
 }
 
 func NewFakeClock(t time.Time) *FakeClock {
@@ -54,8 +54,8 @@ func (f *FakeClock) After(d time.Duration) <-chan time.Time {
 	stopTime := f.time.Add(d)
 	ch := make(chan time.Time, 1)
 	f.waiters = append(f.waiters, &fakeClockWaiter{
-		targetTime:	stopTime,
-		destChan:	ch,
+		targetTime: stopTime,
+		destChan:   ch,
 	})
 	return ch
 }
@@ -66,10 +66,10 @@ func (f *FakeClock) Tick(d time.Duration) <-chan time.Time {
 	tickTime := f.time.Add(d)
 	ch := make(chan time.Time, 1)
 	f.waiters = append(f.waiters, &fakeClockWaiter{
-		targetTime:		tickTime,
-		stepInterval:	d,
-		skipIfBlocked:	true,
-		destChan:		ch,
+		targetTime:    tickTime,
+		stepInterval:  d,
+		skipIfBlocked: true,
+		destChan:      ch,
 	})
 
 	return ch
@@ -96,7 +96,7 @@ func (f *FakeClock) setTimeLocked(t time.Time) {
 		w := f.waiters[i]
 		if !w.targetTime.After(t) {
 			if w.skipIfBlocked {
-				select{
+				select {
 				case w.destChan <- t:
 					w.fired = true
 				default:
@@ -135,10 +135,10 @@ func (f *FakeClock) NewTimer(d time.Duration) Timer {
 	stopTime := f.time.Add(d)
 	ch := make(chan time.Time, 1)
 	timer := &fakeTimer{
-		fakeClock:	f,
-		waiter:	&fakeClockWaiter{
-			targetTime:	stopTime,
-			destChan:	ch,
+		fakeClock: f,
+		waiter: &fakeClockWaiter{
+			targetTime: stopTime,
+			destChan:   ch,
 		},
 	}
 	f.waiters = append(f.waiters, timer.waiter)
@@ -151,14 +151,14 @@ func (f *FakeClock) NewTicker(d time.Duration) Ticker {
 	tickTime := f.time.Add(d)
 	ch := make(chan time.Time, 1)
 	f.waiters = append(f.waiters, &fakeClockWaiter{
-		targetTime:		tickTime,
-		stepInterval:	d,
-		skipIfBlocked:	true,
-		destChan:		ch,
+		targetTime:    tickTime,
+		stepInterval:  d,
+		skipIfBlocked: true,
+		destChan:      ch,
 	})
 
 	return &fakeTicker{
-		c:	ch,
+		c: ch,
 	}
 }
 
@@ -174,7 +174,7 @@ var (
 
 type fakeTimer struct {
 	fakeClock *FakeClock
-	waiter 	  *fakeClockWaiter
+	waiter    *fakeClockWaiter
 }
 
 // C returns the channel that notifies when this timer has fired.

@@ -1,8 +1,8 @@
 package workqueue
 
 import (
-	"testing"
 	"sync"
+	"testing"
 	"time"
 )
 

@@ -31,21 +31,21 @@ func (s set) has(k interface{}) bool {
 }
 
 type Type struct {
-	queue	[]t
+	queue []t
 
-	dirty	set
+	dirty      set
 	processing set
 
 	shuttingDown bool
 
-	cond	*sync.Cond	
+	cond *sync.Cond
 }
 
 func New() *Type {
 	return &Type{
-		dirty:		make(set),
-		processing:	make(set),
-		cond:		sync.NewCond(&sync.Mutex{}),
+		dirty:      make(set),
+		processing: make(set),
+		cond:       sync.NewCond(&sync.Mutex{}),
 	}
 }
 
@@ -119,4 +119,3 @@ func (t *Type) ShuttingDown() bool {
 	defer t.cond.L.Unlock()
 	return t.shuttingDown
 }
-
